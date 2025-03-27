@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Tools - Online Courses</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #fff;
+      }
+      .card h2 {
+        margin-top: 0;
+        color: #3498db;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #3498db;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .warning {
+        color: #e74c3c;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Database Tools - Online Courses</h1>
+
+      <div class="card">
+        <h2>View Database Schema</h2>
+        <p>
+          Display all tables, their structure, relationships, and sample data
+          from the online_courses database.
+        </p>
+        <a href="display_database.php" class="btn">View Database Schema</a>
+      </div>
+
+      <div class="card">
+        <h2>Reset Database</h2>
+        <p>
+          This will rebuild the database schema from scratch.
+          <span class="warning"
+            >Warning: This action might result in data loss!</span
+          >
+        </p>
+        <a href="display_database.php?reset=true" class="btn">Reset Database</a>
+      </div>
+
+      <div class="card">
+        <h2>Database Management</h2>
+        <p>
+          If you have phpMyAdmin installed with XAMPP, you can use it for more
+          advanced database management.
+        </p>
+        <a href="http://localhost/phpmyadmin" class="btn" target="_blank"
+          >Open phpMyAdmin</a
+        >
+      </div>
+
+      <p><a href="index.php">← Back to main site</a></p>
+    </div>
+  </body>
+</html>

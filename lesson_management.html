@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Bài Giảng</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --primary-hover: #2980b9;
+        --secondary-color: #2ecc71;
+        --secondary-hover: #27ae60;
+        --danger-color: #e74c3c;
+        --danger-hover: #c0392b;
+        --text-light: #f8fafc;
+        --text-dark: #1e293b;
+        --bg-light: #f8fafc;
+        --bg-dark: #0f172a;
+        --card-light: #ffffff;
+        --card-dark: #1e293b;
+        --border-light: #e2e8f0;
+        --border-dark: #334155;
+        --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+        --shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        line-height: 1.6;
+      }
+
+      body.dark-mode {
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        color: white;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+      }
+
+      .logo i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .notification-icon {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--danger-color);
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mode-toggle {
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .teacher-name {
+        font-size: 0.9rem;
+      }
+
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        background: var(--card-light);
+        border-right: 1px solid var(--border-light);
+        overflow-y: auto;
+        z-index: 99;
+        transition: all 0.3s ease;
+      }
+
+      .dark-mode .sidebar {
+        background: var(--card-dark);
+        border-right-color: var(--border-dark);
+      }
+
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .sidebar ul li {
+        margin-bottom: 2px;
+      }
+
+      .sidebar ul li a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        color: var(--text-dark);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .dark-mode .sidebar ul li a {
+        color: var(--text-light);
+      }
+
+      .sidebar ul li a:hover,
+      .sidebar ul li a.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .sidebar ul li a i {
+        width: 20px;
+        text-align: center;
+      }
+
+      .sidebar-footer {
+        padding: 15px 20px;
+        font-size: 0.75rem;
+        opacity: 0.7;
+        text-align: center;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .dark-mode .sidebar-footer {
+        border-top-color: var(--border-dark);
+      }
+
+      .main-content {
+        margin-left: 220px;
+        margin-top: 56px;
+        padding: 30px;
+        min-height: calc(100vh - 56px);
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+      }
+
+      .mobile-menu-toggle {
+        display: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        margin-right: 15px;
+      }
+
+      /* Page-specific styling */
+      .page-header {
+        background: var(--primary-color);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        border-radius: 5px;
+      }
+
+      .content-wrapper {
+        background: var(--card-light);
+        border-radius: 5px;
+        box-shadow: var(--shadow-light);
+        padding: 25px;
+        margin-bottom: 30px;
+      }
+
+      .dark-mode .content-wrapper {
+        background: var(--card-dark);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: 4px;
+        transition: border-color 0.3s;
+        background-color: var(--card-light);
+        color: var(--text-dark);
+      }
+
+      .dark-mode .form-control {
+        background-color: var(--card-dark);
+        border-color: var(--border-dark);
+        color: var(--text-light);
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+      }
+
+      textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.3s;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .course-selector {
+        margin-bottom: 20px;
+      }
+
+      .course-selector select {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: 4px;
+        background-color: var(--card-light);
+        color: var(--text-dark);
+      }
+
+      .dark-mode .course-selector select {
+        background-color: var(--card-dark);
+        border-color: var(--border-dark);
+        color: var(--text-light);
+      }
+
+      .lesson-list {
+        margin-top: 30px;
+      }
+
+      .lesson-item {
+        background: #f9f9f9;
+        border: 1px solid var(--border-light);
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+      }
+
+      .dark-mode .lesson-item {
+        background: rgba(30, 41, 59, 0.8);
+        border-color: var(--border-dark);
+      }
+
+      .lesson-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+
+      .lesson-description {
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .dark-mode .lesson-description {
+        color: #aaa;
+      }
+
+      .lesson-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-edit {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-edit:hover {
+        background: var(--secondary-hover);
+      }
+
+      .btn-delete {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-delete:hover {
+        background: var(--danger-hover);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 30px;
+        color: #777;
+        background: var(--card-light);
+        border-radius: 5px;
+        box-shadow: var(--shadow-light);
+      }
+
+      .dark-mode .empty-state {
+        background: var(--card-dark);
+        color: #aaa;
+        box-shadow: var(--shadow-dark);
+      }
+
+      .file-input-container {
+        margin-bottom: 15px;
+      }
+
+      .file-input-container input[type="file"] {
+        margin-top: 5px;
+      }
+
+      /* Success and error message styling */
+      .error-message {
+        background-color: #ffecec;
+        color: var(--danger-color);
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--danger-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .error-message i {
+        margin-right: 10px;
+        font-size: 18px;
+      }
+
+      .success-message {
+        background-color: #e7ffe7;
+        color: var(--secondary-color);
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--secondary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .success-message i {
+        margin-right: 10px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="mobile-menu-toggle" id="mobile-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Học Tập</span>
+      </div>
+      <div class="user-actions">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </div>
+        <button class="mode-toggle" id="mode-toggle">
+          <i class="fas fa-moon"></i>
+        </button>
+        <div class="teacher-name">Xin chào, <strong>Instructor</strong></div>
+        <button type="button" class="logout-btn" onclick="handleLogout()">
+          <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <ul>
+        <li>
+          <a href="app/views/product/instructor_dashboard.php"
+            ><i class="fas fa-tachometer-alt"></i> Tổng Quan</a
+          >
+        </li>
+        <li>
+          <a href="app/views/product/create_course.php"
+            ><i class="fas fa-plus-circle"></i> Thêm Khoá Học</a
+          >
+        </li>
+        <li>
+          <a href="app/views/product/manage_lessons.php" class="active"
+            ><i class="fas fa-book"></i> Quản Lý Bài Giảng</a
+          >
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-users"></i> Danh Sách Học Viên</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-tasks"></i> Bài Tập & Đánh Giá</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-comments"></i> Thảo Luận</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-certificate"></i> Chứng Chỉ</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-bell"></i> Thông Báo</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-chart-line"></i> Phân Tích Dữ Liệu</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-money-bill-wave"></i> Thu Nhập</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-question-circle"></i> Hỗ Trợ</a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">© 2025 Học Tập Trực Tuyến</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-header">
+        <h2>Quản Lý Bài Giảng</h2>
+      </div>
+
+      <div class="success-message" id="success-message" style="display: none">
+        <i class="fas fa-check-circle"></i> <span id="success-text"></span>
+      </div>
+
+      <div class="error-message" id="error-message" style="display: none">
+        <i class="fas fa-exclamation-circle"></i> <span id="error-text"></span>
+      </div>
+
+      <div class="course-selector">
+        <select id="course-selector" class="form-control">
+          <option value="0">-- Chọn khóa học --</option>
+          <option value="1">Lập trình Web cơ bản</option>
+          <option value="2">Lập trình Mobile với React Native</option>
+          <option value="3">Python cho người mới bắt đầu</option>
+          <option value="4">Machine Learning cơ bản</option>
+        </select>
+      </div>
+
+      <div class="content-wrapper" id="add-lesson-form" style="display: none">
+        <h3>Thêm Bài Giảng Mới</h3>
+        <form id="lesson-form">
+          <div class="form-group">
+            <label for="title">Tiêu Đề</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="form-control"
+              placeholder="Nhập tiêu đề bài giảng"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Mô Tả</label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-control"
+              placeholder="Nhập mô tả bài giảng"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="attachment">Tệp Đính Kèm</label>
+            <div class="file-input-container">
+              <input
+                type="file"
+                id="attachment"
+                name="attachment"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Thêm Bài Giảng</button>
+        </form>
+      </div>
+
+      <div class="lesson-list" id="lesson-list" style="display: none">
+        <h3>Danh Sách Bài Giảng</h3>
+        <div id="lessons-container">
+          <!-- Lessons will be added here dynamically -->
+        </div>
+      </div>
+
+      <div class="empty-state" id="empty-state">
+        <p>Vui lòng chọn một khóa học để quản lý bài giảng.</p>
+      </div>
+    </div>
+
+    <script>
+      // Sample data for demo purposes
+      const coursesData = {
+        1: {
+          title: "Lập trình Web cơ bản",
+          lessons: [
+            {
+              id: 1,
+              title: "HTML cơ bản",
+              description: "Giới thiệu về HTML và cách tạo trang web đơn giản",
+              attachments: 1,
+            },
+            {
+              id: 2,
+              title: "CSS cơ bản",
+              description: "Học cách trang trí trang web với CSS",
+              attachments: 1,
+            },
+            {
+              id: 3,
+              title: "JavaScript cơ bản",
+              description: "Làm cho trang web trở nên sinh động với JavaScript",
+              attachments: 0,
+            },
+          ],
+        },
+        2: {
+          title: "Lập trình Mobile với React Native",
+          lessons: [
+            {
+              id: 4,
+              title: "Cài đặt môi trường",
+              description:
+                "Hướng dẫn cài đặt và cấu hình môi trường phát triển",
+              attachments: 1,
+            },
+            {
+              id: 5,
+              title: "Components trong React Native",
+              description: "Tìm hiểu về components và cách sử dụng",
+              attachments: 0,
+            },
+          ],
+        },
+        3: {
+          title: "Python cho người mới bắt đầu",
+          lessons: [
+            {
+              id: 6,
+              title: "Cài đặt Python",
+              description: "Hướng dẫn cài đặt Python và môi trường phát triển",
+              attachments: 1,
+            },
+            {
+              id: 7,
+              title: "Biến và kiểu dữ liệu",
+              description: "Tìm hiểu về biến và các kiểu dữ liệu trong Python",
+              attachments: 0,
+            },
+            {
+              id: 8,
+              title: "Cấu trúc điều khiển",
+              description: "Học về if, else, loops trong Python",
+              attachments: 1,
+            },
+          ],
+        },
+        4: {
+          title: "Machine Learning cơ bản",
+          lessons: [],
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileToggle = document.getElementById("mobile-toggle");
+        const sidebar = document.getElementById("sidebar");
+        const modeToggle = document.getElementById("mode-toggle");
+        const body = document.body;
+        const courseSelector = document.getElementById("course-selector");
+        const addLessonForm = document.getElementById("add-lesson-form");
+        const lessonList = document.getElementById("lesson-list");
+        const emptyState = document.getElementById("empty-state");
+        const lessonsContainer = document.getElementById("lessons-container");
+        const lessonForm = document.getElementById("lesson-form");
+        const successMessage = document.getElementById("success-message");
+        const errorMessage = document.getElementById("error-message");
+        const successText = document.getElementById("success-text");
+        const errorText = document.getElementById("error-text");
+
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem("darkMode") === "true";
+
+        // Apply saved preference on page load
+        if (savedDarkMode) {
+          body.classList.add("dark-mode");
+          modeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Mobile menu toggle
+        mobileToggle.addEventListener("click", function () {
+          sidebar.classList.toggle("active");
+        });
+
+        // Dark mode toggle
+        modeToggle.addEventListener("click", function () {
+          body.classList.toggle("dark-mode");
+
+          // Update icon
+          const isDarkMode = body.classList.contains("dark-mode");
+          modeToggle.innerHTML = isDarkMode
+            ? '<i class="fas fa-sun"></i>'
+            : '<i class="fas fa-moon"></i>';
+
+          // Save preference
+          localStorage.setItem("darkMode", isDarkMode);
+        });
+
+        // Course selection
+        courseSelector.addEventListener("change", function () {
+          const courseId = parseInt(this.value);
+
+          if (courseId > 0) {
+            // Show the add lesson form and lesson list
+            addLessonForm.style.display = "block";
+            lessonList.style.display = "block";
+            emptyState.style.display = "none";
+
+            // Load lessons for the selected course
+            loadLessons(courseId);
+          } else {
+            // Show the empty state
+            addLessonForm.style.display = "none";
+            lessonList.style.display = "none";
+            emptyState.style.display = "block";
+          }
+        });
+
+        // Add lesson form submission
+        lessonForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const title = document.getElementById("title").value.trim();
+          const description = document
+            .getElementById("description")
+            .value.trim();
+          const attachment = document.getElementById("attachment").files[0];
+
+          if (title) {
+            const courseId = parseInt(courseSelector.value);
+
+            if (courseId > 0) {
+              // Create a new lesson object
+              const newLesson = {
+                id: Date.now(), // Generate a unique ID
+                title: title,
+                description: description || "",
+                attachments: attachment ? 1 : 0,
+              };
+
+              // Add the lesson to the course
+              if (!coursesData[courseId].lessons) {
+                coursesData[courseId].lessons = [];
+              }
+
+              coursesData[courseId].lessons.unshift(newLesson);
+
+              // Reload the lessons
+              loadLessons(courseId);
+
+              // Reset the form
+              lessonForm.reset();
+
+              // Show success message
+              showSuccessMessage("Bài giảng đã được thêm thành công!");
+            }
+          } else {
+            // Show error message
+            showErrorMessage("Vui lòng nhập tiêu đề bài giảng.");
+          }
+        });
+
+        // Function to load lessons for a course
+        function loadLessons(courseId) {
+          const course = coursesData[courseId];
+
+          if (course) {
+            lessonsContainer.innerHTML = "";
+
+            if (course.lessons && course.lessons.length > 0) {
+              course.lessons.forEach((lesson) => {
+                const lessonItem = document.createElement("div");
+                lessonItem.className = "lesson-item";
+                lessonItem.innerHTML = `
+                                <div class="lesson-title">${lesson.title}</div>
+                                <div class="lesson-description">${
+                                  lesson.description ||
+                                  "Mô tả ngắn về bài giảng " + lesson.title
+                                }</div>
+                                <div class="lesson-actions">
+                                    <a href="#" class="btn-edit" data-id="${
+                                      lesson.id
+                                    }">Sửa</a>
+                                    <a href="#" class="btn-delete" data-id="${
+                                      lesson.id
+                                    }">Xóa</a>
+                                </div>
+                            `;
+
+                lessonsContainer.appendChild(lessonItem);
+              });
+
+              // Add event listeners for edit and delete buttons
+              addLessonActionListeners(courseId);
+            } else {
+              lessonsContainer.innerHTML = `
+                            <div class="empty-state">
+                                <p>Chưa có bài giảng nào cho khóa học này.</p>
+                            </div>
+                        `;
+            }
+          }
+        }
+
+        // Function to add event listeners to lesson action buttons
+        function addLessonActionListeners(courseId) {
+          const editButtons = document.querySelectorAll(".btn-edit");
+          const deleteButtons = document.querySelectorAll(".btn-delete");
+
+          editButtons.forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.preventDefault();
+              const lessonId = parseInt(this.dataset.id);
+              // In a real application, this would navigate to an edit page
+              alert(`Sửa bài giảng ID: ${lessonId}`);
+            });
+          });
+
+          deleteButtons.forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.preventDefault();
+              const lessonId = parseInt(this.dataset.id);
+
+              if (confirm("Bạn có chắc chắn muốn xóa bài giảng này?")) {
+                // Find and remove the lesson
+                const lessons = coursesData[courseId].lessons;
+                const index = lessons.findIndex(
+                  (lesson) => lesson.id === lessonId
+                );
+
+                if (index !== -1) {
+                  lessons.splice(index, 1);
+                  loadLessons(courseId);
+                  showSuccessMessage("Bài giảng đã được xóa thành công!");
+                }
+              }
+            });
+          });
+        }
+
+        // Function to show success message
+        function showSuccessMessage(message) {
+          successText.textContent = message;
+          successMessage.style.display = "flex";
+
+          // Hide after 5 seconds
+          setTimeout(() => {
+            successMessage.style.opacity = "0";
+            successMessage.style.transition = "opacity 0.5s ease-out";
+            setTimeout(() => {
+              successMessage.style.display = "none";
+              successMessage.style.opacity = "1";
+            }, 500);
+          }, 5000);
+        }
+
+        // Function to show error message
+        function showErrorMessage(message) {
+          errorText.textContent = message;
+          errorMessage.style.display = "flex";
+
+          // Hide after 5 seconds
+          setTimeout(() => {
+            errorMessage.style.opacity = "0";
+            errorMessage.style.transition = "opacity 0.5s ease-out";
+            setTimeout(() => {
+              errorMessage.style.display = "none";
+              errorMessage.style.opacity = "1";
+            }, 500);
+          }, 5000);
+        }
+
+        // Logout functionality
+        window.handleLogout = function () {
+          if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+            window.location.href = "index.html";
+          }
+        };
+
+        // Notification click handler
+        document
+          .querySelector(".notification-icon")
+          .addEventListener("click", function () {
+            alert("Chức năng thông báo sẽ được phát triển trong tương lai!");
+          });
+      });
+    </script>
+  </body>
+</html>

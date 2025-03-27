@@ -1,0 +1,324 @@
+.review-section {
+  background: linear-gradient(135deg, #a6c1ee 0%, #fbc2eb 100%);
+  padding: 40px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.2) 25%,
+    rgba(255, 255, 255, 0) 30%
+  );
+  z-index: 1;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.review-section h2 {
+  color: #6a11cb;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.reviews-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin: 20px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.review-card {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  border-left: 5px solid #ff7eb3;
+  backdrop-filter: blur(5px);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 5px solid #7f7fd5;
+}
+
+.review-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    225deg,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.5) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.review-text {
+  color: #4a4a4a;
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.review-rating {
+  color: #ff9900;
+  font-size: 1.4em;
+  margin: 10px 0;
+  text-shadow: 0 0 5px rgba(255, 153, 0, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.review-author {
+  color: #7f7fd5;
+  font-style: italic;
+  text-align: right;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+}
+
+/* Form styles */
+.review-form {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.review-form::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff6ec4, #7873f5, #7873f5, #ff6ec4);
+  z-index: -1;
+  border-radius: 22px;
+  animation: borderGlow 3s ease infinite alternate;
+}
+
+@keyframes borderGlow {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.review-form h3 {
+  color: #7873f5;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e6e6fa;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  color: #4a4a4a;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.review-form textarea:focus {
+  border-color: #7873f5;
+  outline: none;
+  box-shadow: 0 0 15px rgba(120, 115, 245, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.review-form select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e6e6fa;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237873f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.review-form select:focus {
+  border-color: #7873f5;
+  outline: none;
+  box-shadow: 0 0 15px rgba(120, 115, 245, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.review-form button {
+  background: linear-gradient(45deg, #ff6ec4, #7873f5);
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(120, 115, 245, 0.4);
+  letter-spacing: 1px;
+}
+
+.review-form button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(120, 115, 245, 0.5);
+}
+
+.review-form button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Success and Error messages */
+.success-message {
+  background-color: rgba(232, 245, 233, 0.9);
+  color: #2e7d32;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  border-left: none;
+  box-shadow: 0 5px 15px rgba(46, 125, 50, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.success-message::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #43a047, #66bb6a);
+}
+
+.error-message {
+  background-color: rgba(255, 235, 238, 0.9);
+  color: #c62828;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  border-left: none;
+  box-shadow: 0 5px 15px rgba(198, 40, 40, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.error-message::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #e53935, #ef5350);
+}
+
+/* Labels */
+.review-form label {
+  display: block;
+  margin-bottom: 10px;
+  color: #7873f5;
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .reviews-container {
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+  }
+
+  .review-form {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+
+  .review-card {
+    margin: 10px;
+  }
+}
